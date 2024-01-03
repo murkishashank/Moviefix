@@ -5,18 +5,21 @@
  * @format
  */
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { Image, StyleSheet, useColorScheme } from 'react-native';
+import { Colors } from 'react-native/Libraries/NewAppScreen';
+import { MovieListScreen } from './screens/MovieListScreen';
 
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+const AppLogo = () => {
+  // Replace 'app-logo.png' with the actual path or URI of your app logo
+  const logoUri = require('./assets/app-logo.png');
+
+  return <Image source={logoUri} style={{ width: 100, height: 40, resizeMode: 'contain' }} />;
+};
+
+const Stack = createStackNavigator();
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -26,22 +29,20 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Text>Home</Text>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    <NavigationContainer>
+      <Stack.Navigator
+        initialRouteName="MovieList2"
+        screenOptions={{
+          headerTitle: () => <AppLogo />, // Use AppLogo component as header title
+          headerTitleAlign: 'left',
+          headerStyle: {
+            backgroundColor: backgroundStyle.backgroundColor,
+          },
+        }}
+      >
+        <Stack.Screen name="MovieList" component={MovieListScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 
