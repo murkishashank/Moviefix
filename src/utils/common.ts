@@ -1,6 +1,14 @@
-import { Movie, YearWiseMovies } from '../types';
+import { YearWiseMovies } from '../types';
+export interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+  release_date: string;
+  genre_ids: number[];
+  overview: string;
+}
 
-export const getYearWiseMovies = (movies: Movie[]): YearWiseMovies => {
+export const getYearWiseMovies = (movies: Movie[], selectedGenres: number[] | null): YearWiseMovies => {
   if (!movies.length) {
     return {};
   }
@@ -20,7 +28,7 @@ export const getYearWiseMovies = (movies: Movie[]): YearWiseMovies => {
       acc[year] = [];
     }
 
-    if (acc[year].length < 20 && !uniqueMoviesMap.has(movie.id)) {
+    if ((selectedGenres === null || selectedGenres.every(genreId => movie.genre_ids.includes(genreId))) && acc[year].length < 20 && !uniqueMoviesMap.has(movie.id)) {
       acc[year].push(movie);
       uniqueMoviesMap.set(movie.id, movie);
     }
