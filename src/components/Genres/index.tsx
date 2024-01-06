@@ -3,21 +3,33 @@ import { GenresType } from '../../types';
 
 interface Props {
   genres: GenresType[];
-  selectedGenres: number[];
+  selectedGenres: number[] | null;
   handleGenrePress: (id: number) => void;
 }
 
 export const Genres = ({ genres, selectedGenres, handleGenrePress }: Props) => {
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.genreScrollContainer}>
       <View style={styles.genreContainer}>
+        <TouchableOpacity
+          key="all-genres"
+          style={[
+            styles.genreButton,
+            {
+              backgroundColor: selectedGenres === null || (selectedGenres && selectedGenres.includes(0)) ? 'lightgreen' : 'white',
+            },
+          ]}
+          onPress={() => handleGenrePress(0)}
+        >
+          <Text>{'All Genres'}</Text>
+        </TouchableOpacity>
         {genres.map(({ id, name }) => (
           <TouchableOpacity
             key={`${name}-${id}`}
             style={[
               styles.genreButton,
               {
-                backgroundColor: selectedGenres.includes(id) ? 'lightgreen' : 'white',
+                backgroundColor: selectedGenres && selectedGenres.includes(id) ? 'lightgreen' : 'white',
               },
             ]}
             onPress={() => handleGenrePress(id)}
@@ -39,7 +51,6 @@ const styles = StyleSheet.create({
   genreContainer: {
     margin: 0,
     padding: 0,
-    maxHeight: 80,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'center',
@@ -52,7 +63,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     justifyContent: 'center',
     alignItems: 'center',
-    minWidth: 50,
+    minWidth: 80,
     maxHeight: 60,
   },
 });

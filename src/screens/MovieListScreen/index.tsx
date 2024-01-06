@@ -9,21 +9,37 @@ interface Props {}
 
 export const MovieListScreen = (props: Props) => {
   const [genresList, setGenresList] = useState<GenresType[]>([]);
-  const [selectedGenres, setSelectedGenres] = useState<number[]>([]);
+  const [selectedGenres, setSelectedGenres] = useState<number[] | null>([]);
 
   useEffect(() => {
     getAllGenres().then(data => {
-      setGenresList([{ id: null, name: 'All' }, ...data.genres]);
+      setGenresList(data.genres);
     });
   }, []);
 
   const handleGenrePress = (genreId: number) => {
-    console.log('selectedGenres', selectedGenres);
-    if (selectedGenres.includes(genreId)) {
-      const index = selectedGenres.findIndex(id => id === genreId);
-      setSelectedGenres(prevGenre => prevGenre.filter((_, i) => i !== index));
+    if (genreId === 0) {
+      // "All Genres" is selected, set the state to null
+      setSelectedGenres(null);
     } else {
-      setSelectedGenres(prevGenre => [...prevGenre, genreId]);
+      // Toggle the selected state for the genre
+      setSelectedGenres(prevGenres => {
+        if (prevGenres === null || prevGenres.includes(0)) {
+          // If "All Genres" is selected or was selected, remove it from the selection
+          return [genreId];
+        }
+
+        const updatedGenres = [...prevGenres];
+        const index = updatedGenres.indexOf(genreId);
+
+        if (index !== -1) {
+          updatedGenres.splice(index, 1); // Genre is already selected, remove it
+        } else {
+          updatedGenres.push(genreId); // Genre is not selected, add it
+        }
+
+        return updatedGenres;
+      });
     }
   };
 
